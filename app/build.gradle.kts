@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -41,6 +42,12 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
+
+    // NOVO — Room 3.0
+    implementation(libs.androidx.room3.runtime)
+    implementation(libs.androidx.sqlite.bundled)   // driver exigido pelo Room 3.0
+    ksp(libs.androidx.room3.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
