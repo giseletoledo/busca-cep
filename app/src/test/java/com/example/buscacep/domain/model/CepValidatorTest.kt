@@ -3,7 +3,7 @@ package com.example.buscacep.domain.model
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-//testes unitários
+
 class CepValidatorTest {
 
     @Test
