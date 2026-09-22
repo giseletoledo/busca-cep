@@ -2,6 +2,7 @@ package com.example.buscacep.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.buscacep.domain.repository.CepRepository
+import com.example.buscacep.ui.viewmodel.CepViewModelLiveData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -25,12 +26,12 @@ class CepViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
     private val repository = mockk<CepRepository>(relaxed = true)
-    private lateinit var viewModel: CepViewModel
+    private lateinit var viewModel: CepViewModelLiveData
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = CepViewModel(repository)
+        viewModel = CepViewModelLiveData(repository)
     }
 
     @After

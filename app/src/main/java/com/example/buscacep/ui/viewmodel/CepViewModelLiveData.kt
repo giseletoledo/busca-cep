@@ -1,4 +1,4 @@
-package com.example.buscacep.ui
+package com.example.buscacep.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,14 +7,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.buscacep.domain.model.CepValidator
 import com.example.buscacep.domain.repository.CepRepository
+import com.example.buscacep.livedata.CepUiStateLiveData
 import kotlinx.coroutines.launch
 
-class CepViewModel(
+class CepViewModelLiveData(
     private val repository: CepRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableLiveData(CepUiState())
-    val uiState: LiveData<CepUiState> = _uiState
+    private val _uiState = MutableLiveData(CepUiStateLiveData())
+    val uiState: LiveData<CepUiStateLiveData> = _uiState
 
     init { loadCeps() }
 
@@ -54,8 +55,8 @@ class CepViewModel(
     fun onSavedMessageShown() { updateState { it.copy(isSaved = false) } }
     fun onErrorMessageShown() { updateState { it.copy(errorMessage = null) } }
 
-    private fun currentState(): CepUiState = _uiState.value ?: CepUiState()
-    private fun updateState(transform: (CepUiState) -> CepUiState) {
+    private fun currentState(): CepUiStateLiveData = _uiState.value ?: CepUiStateLiveData()
+    private fun updateState(transform: (CepUiStateLiveData) -> CepUiStateLiveData) {
         _uiState.value = transform(currentState())
     }
 
@@ -64,7 +65,7 @@ class CepViewModel(
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return CepViewModel(repository) as T
+                    return CepViewModelLiveData(repository) as T
                 }
             }
     }

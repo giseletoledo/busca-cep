@@ -1,6 +1,6 @@
-package com.example.buscacep.ui
+package com.example.buscacep.livedata
 
-data class CepUiState(
+data class CepUiStateLiveData(
     val cepAtual: String = "",
     val ceps: List<String> = emptyList(),
     val isLoading: Boolean = false,
