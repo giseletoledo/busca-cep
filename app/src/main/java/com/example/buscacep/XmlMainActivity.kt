@@ -10,40 +10,36 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doAfterTextChanged
 import com.example.buscacep.data.local.AppDatabase
 import com.example.buscacep.data.repository.CepRepositoryImpl
-import com.example.buscacep.databinding.ActivityMainBinding
-import com.example.buscacep.ui.CepUiState
-import com.example.buscacep.ui.CepViewModel
+import com.example.buscacep.databinding.ActivityMain2Binding
+import com.example.buscacep.domain.model.CepFormatter
+import com.example.buscacep.livedata.CepUiStateLiveData
+import com.example.buscacep.ui.viewmodel.CepViewModelLiveData
 
 class XmlMainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    //ActivityMainBinding para ActivityMain2Binding
+    private lateinit var binding: ActivityMain2Binding
 
-    private val viewModel: CepViewModel by viewModels {
+    private val viewModel: CepViewModelLiveData by viewModels {
         val database = AppDatabase.getInstance(applicationContext)
-        CepViewModel.provideFactory(CepRepositoryImpl(database.cepDao()))
+        CepViewModelLiveData.provideFactory(CepRepositoryImpl(database.cepDao()))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Mantém o layout edge-to-edge
         enableEdgeToEdge()
 
-        // Inicializa o View Binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Mantém o ajuste automático para as barras do sistema
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
             view.setPadding(
                 systemBars.left,
                 systemBars.top,
                 systemBars.right,
                 systemBars.bottom
             )
-
             insets
         }
 
@@ -55,9 +51,11 @@ class XmlMainActivity : AppCompatActivity() {
         binding.editCep.doAfterTextChanged { text ->
             viewModel.onCepChanged(text?.toString().orEmpty())
         }
-
         binding.buttonSalvar.setOnClickListener {
             viewModel.saveCep()
+        }
+        binding.buttonVoltar.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -65,15 +63,7 @@ class XmlMainActivity : AppCompatActivity() {
         viewModel.uiState.observe(this) { state -> render(state) }
     }
 
-    private fun formatarCep(cep: String): String {
-        return if (cep.length == 8) {
-            "${cep.substring(0, 5)}-${cep.substring(5)}"
-        } else {
-            cep
-        }
-    }
-
-    private fun render(state: CepUiState) {
+    private fun render(state: CepUiStateLiveData) {
         if (binding.editCep.text.toString() != state.cepAtual) {
             binding.editCep.setText(state.cepAtual)
             binding.editCep.setSelection(state.cepAtual.length)
@@ -82,7 +72,9 @@ class XmlMainActivity : AppCompatActivity() {
         binding.textCepsSalvos.text = if (state.ceps.isEmpty()) {
             "Nenhum CEP salvo ainda"
         } else {
-            state.ceps.joinToString(separator = "\n") { cep -> formatarCep(cep) }
+            state.ceps.joinToString(separator = "\n") { cep ->
+                CepFormatter.formatar(cep)
+            }
         }
 
         if (state.isSaved) {

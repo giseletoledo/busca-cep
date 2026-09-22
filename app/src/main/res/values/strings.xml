@@ -3,4 +3,8 @@
     <string name="msg_empty_cep">Nenhum CEP salvo ainda</string>
     <string name="btn_salvar">Salvar</string>
     <string name="hint_cep">Digite o CEP</string>
+    <string name="vers_o_compose_flow">Versão Compose (Flow)</string>
+    <string name="vers_o_xml_livedata">Versão XML (LiveData)</string>
+    <string name="busca_cep">Busca CEP</string>
+    <string name="voltar">Voltar</string>
 </resources>

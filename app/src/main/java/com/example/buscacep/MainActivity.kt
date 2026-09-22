@@ -1,41 +1,25 @@
 package com.example.buscacep
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import com.example.buscacep.data.local.AppDatabase
-import com.example.buscacep.data.repository.CepRepositoryImpl
-import com.example.buscacep.ui.CepScreen
-import com.example.buscacep.ui.CepViewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.appcompat.app.AppCompatActivity
+import com.example.buscacep.databinding.ActivityMainBinding
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
-    private val viewModel: CepViewModel by viewModels {
-        viewModelFactory {
-            initializer {
-                val database = AppDatabase.getInstance(applicationContext)
-
-                CepViewModel(
-                    CepRepositoryImpl(database.cepDao())
-                )
-            }
-        }
-    }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setContent {
-            MaterialTheme {
-                Surface {
-                    CepScreen(viewModel)
-                }
-            }
+        binding.buttonIrXml.setOnClickListener {
+            startActivity(Intent(this, XmlMainActivity::class.java))
+        }
+
+        binding.buttonIrCompose.setOnClickListener {
+            startActivity(Intent(this, ComposeActivity::class.java))
         }
     }
 }
