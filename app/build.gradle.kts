@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
 
@@ -21,6 +22,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 
     buildTypes {
@@ -54,6 +56,10 @@ dependencies {
     testImplementation(libs.androidx.core.testing)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    // Lifecycle + ViewModel para Compose (StateFlow)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
 
     // Compose
     implementation("androidx.activity:activity-compose:1.13.0")
