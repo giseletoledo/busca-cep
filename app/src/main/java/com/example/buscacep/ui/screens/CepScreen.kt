@@ -56,7 +56,9 @@ fun CepScreen(viewModel: CepViewModelFlow) {
         CepInputCard(
             cep = state.cepAtual,
             onCepChange = viewModel::onCepChanged,
-            onSalvarClick = viewModel::saveCep
+            onSalvarClick = viewModel::saveCep,
+            endereco = state.endereco,
+            isLoadingEndereco = state.isLoadingEndereco
         )
         Spacer(Modifier.height(32.dp))
         CepSavedList(ceps = state.ceps)
