@@ -67,5 +67,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.compose.ui:ui-tooling-preview:1.9.3")
 
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
     debugImplementation("androidx.compose.ui:ui-tooling:1.9.3")
 }
