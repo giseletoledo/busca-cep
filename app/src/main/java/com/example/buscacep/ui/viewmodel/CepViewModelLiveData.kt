@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.buscacep.domain.model.BuscaEnderecoResultado
 import com.example.buscacep.domain.model.CepValidator
 import com.example.buscacep.domain.repository.CepRepository
 import com.example.buscacep.livedata.CepUiStateLiveData
@@ -32,7 +33,19 @@ class CepViewModelLiveData(
     }
 
     fun onCepChanged(newCep: String) {
-        updateState { it.copy(cepAtual = newCep, errorMessage = null) }
+        updateState { it.copy(cepAtual = newCep, errorMessage = null, endereco = null) }
+        if(CepValidator.isValid(newCep)) buscarEndereco(newCep)
+    }
+
+    private fun buscarEndereco(cep: String) {
+        viewModelScope.launch {
+            updateState { it.copy(isLoadingEndereco = true) }
+            when (val resultado = repository.buscarEndereco(cep)) {
+                is BuscaEnderecoResultado.Sucesso -> updateState { it.copy(endereco = resultado.endereco, isLoadingEndereco = false) }
+                is BuscaEnderecoResultado.NaoEncontrado -> updateState { it.copy(errorMessage = "CEP não encontrado", isLoadingEndereco = false) }
+                is BuscaEnderecoResultado.Falha -> updateState { it.copy(errorMessage = resultado.mensagem, isLoadingEndereco = false) }
+            }
+        }
     }
 
     fun saveCep() {

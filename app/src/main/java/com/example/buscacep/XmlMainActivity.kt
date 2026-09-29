@@ -86,5 +86,15 @@ class XmlMainActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             viewModel.onErrorMessageShown()
         }
+
+        binding.textEndereco.text = when {
+            state.isLoadingEndereco -> "Buscando endereço..."
+            state.endereco != null -> listOf(
+                state.endereco.logradouro,
+                state.endereco.bairro,
+                "${state.endereco.cidade} / ${state.endereco.uf}"
+            ).filter { it.isNotBlank() }.joinToString("\n")
+            else -> ""
+        }
     }
 }
