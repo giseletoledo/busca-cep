@@ -2,6 +2,7 @@ package com.example.buscacep.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.buscacep.domain.model.BuscaEnderecoResultado
 import com.example.buscacep.domain.model.CepValidator
 import com.example.buscacep.domain.repository.CepRepository
 import com.example.buscacep.flow.CepUiStateFlow
@@ -36,8 +37,41 @@ class CepViewModelFlow(
     }
 
     fun onCepChanged(newCep: String) {
-        _uiState.update { it.copy(cepAtual = newCep, errorMessage = null) }
+        _uiState.update { it.copy(cepAtual = newCep, errorMessage = null, endereco = null)}
+        if (CepValidator.isValid(newCep)) buscarEndereco(newCep)
     }
+
+    private fun buscarEndereco(cep: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            try {
+                when (val resultado = repository.buscarEndereco(cep)) {
+                    is BuscaEnderecoResultado.Sucesso -> _uiState.update {
+                        it.copy(
+                            endereco = resultado.endereco,
+                            isLoadingEndereco = false
+                        )
+                    }
+
+                    is BuscaEnderecoResultado.NaoEncontrado -> _uiState.update {
+                        it.copy(
+                            errorMessage = "CEP não encontrado",
+                            isLoadingEndereco = false
+                        )
+                    }
+
+                    is BuscaEnderecoResultado.Falha -> _uiState.update {
+                        it.copy(
+                            errorMessage = resultado.mensagem,
+                            isLoadingEndereco = false
+                        )
+                    }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            }
+            }
+        }
 
     fun saveCep() {
         val cep = _uiState.value.cepAtual
